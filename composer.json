@@ -1,0 +1,19 @@
+{
+    "name": "haotong/yii-cdn",
+    "description": "yii-cdn",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "haotong",
+            "email": "576006908@qq.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload":{
+        "psr-4":{
+            "haotong\\cdn\\":"./src/"
+        }
+    }
+}
