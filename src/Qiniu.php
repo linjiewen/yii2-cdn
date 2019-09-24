@@ -27,14 +27,28 @@ class Qiniu extends CdnAbstract implements CdnInterface
 
     protected $lastError = null;
 
+    /**
+     * 初始化
+     *
+     * @throws Exception
+     */
     public function init()
     {
         parent::init();
         if( empty($this->accessKey) ) throw new Exception("Qiniu accessKey cannot be blank");
+
         if( empty($this->secretKey) ) throw new Exception("Qiniu secretKey cannot be blank");
+
         $this->client = $this->getBucketManager();
     }
 
+    /**
+     * 上传文件
+     *
+     * @param string $localFile
+     * @param string $destFile
+     * @return bool
+     */
     public function upload($localFile, $destFile)
     {
         $token = $this->getAuth()->uploadToken($this->bucket);
@@ -48,11 +62,24 @@ class Qiniu extends CdnAbstract implements CdnInterface
         }
     }
 
+    /**
+     * 分片上传
+     *
+     * @param string $localFile
+     * @param string $destFile
+     * @return bool|void
+     */
     public function multiUpload($localFile, $destFile)
     {
         $this->upload($localFile, $destFile);
     }
 
+    /**
+     * 删除
+     *
+     * @param string $destFile
+     * @return bool
+     */
     public function delete($destFile)
     {
         $err = $this->client->delete($this->bucket, $destFile);
@@ -63,6 +90,12 @@ class Qiniu extends CdnAbstract implements CdnInterface
         return true;
     }
 
+    /**
+     * 检查是否存在
+     *
+     * @param string $destFile
+     * @return bool
+     */
     public function exists($destFile)
     {
         list($fileInfo, $err) = $this->client->stat($this->bucket, $destFile);
@@ -73,11 +106,21 @@ class Qiniu extends CdnAbstract implements CdnInterface
         }
     }
 
+    /**
+     * 获取认证
+     *
+     * @return Auth
+     */
     public function getAuth()
     {
         return new Auth($this->accessKey, $this->secretKey);
     }
 
+    /**
+     * 空间资源管理及批量操作类
+     *
+     * @return BucketManager
+     */
     private function getBucketManager()
     {
         return new BucketManager($this->getAuth(), new Config());
